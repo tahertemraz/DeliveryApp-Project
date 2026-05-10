@@ -3,6 +3,7 @@ import bcrypt from "bcrypt"; // handles password hashing and comparison
 import User from "./User.mjs"; // inherits the abstract User base class
 import CustomerRepository from "../Database/CustomerRepository.mjs"; // data access layer for Customer DB operations
 import { SALT_ROUNDS } from "../Utils/constants.mjs"; // salt rounds constant used for bcrypt hashing
+import { revokeToken } from "../Utils/token.mjs";
 
 export default class Customer extends User {
   #orders; // private field — the customer's order history, not directly accessible from outside
@@ -50,6 +51,11 @@ export default class Customer extends User {
       throw new Error("Wrong Password"); // throws so the caller knows the password was incorrect
     }
     return accountExists; // returns the raw DB row on success — not a Customer instance
+  }
+
+  static async logout(req, res) {
+    await revokeToken(req);
+    res.setHeader("Set-Cookie", "token=; HttpOnly; Path=/; Max-Age=0");
   }
 }
 

@@ -3,6 +3,7 @@ import { v4 } from "uuid"; // generates a unique ID for each new manager
 import bcrypt from "bcrypt"; // handles password hashing and comparison
 import { SALT_ROUNDS } from "../Utils/constants.mjs"; // shared bcrypt cost factor
 import RestaurantManagerRepository from "../Database/RestaurantManagerRepository.mjs"; // data access layer for RestaurantManager
+import { revokeToken } from "../Utils/token.mjs";
 
 export default class RestaurantManager extends User {
   constructor(userId, restaurantName) {
@@ -34,5 +35,10 @@ export default class RestaurantManager extends User {
     if (!checkPassword) throw new Error("Wrong Password"); // hash does not match — reject login
 
     return account; // returns the DB row — contains userId needed for JWT
+  }
+
+  static async logout(req, res) {
+    await revokeToken(req); // deletes the Session row from the DB
+    res.setHeader("Set-Cookie", "token=; HttpOnly; Path=/; Max-Age=0");
   }
 }

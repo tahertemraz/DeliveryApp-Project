@@ -11,6 +11,15 @@ const restaurantRepo = new RestaurantRepository(); // single instance reused acr
 const orderRepo = new OrderRepository();
 
 export const pageController = {
+  // --- NEW: serves GET / ---
+  landing: async (req, res) => {
+    try {
+      await sendHTML(res, "Landing-PageView.html");
+    } catch {
+      errorController(HTTP_STATUS.SERVER_ERROR, req, res);
+    }
+  },
+
   // serves GET /login — static login form, no data injection needed
   login: async (req, res) => {
     try {

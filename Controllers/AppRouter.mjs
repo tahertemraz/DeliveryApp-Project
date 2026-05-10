@@ -7,50 +7,54 @@ import { createRouter } from "./Router.mjs"; // factory function that creates a 
 
 const router = createRouter(); // creates a new Router instance with an empty routes table
 
-// Pages
-router.add("GET", "/", pageController.login); // unauthenticated root visit lands on login, not the protected home page
-router.add("GET", "/login", pageController.login); // serves the login form
-router.add("GET", "/register", pageController.register); // serves the registration form
-router.add("GET", "/home", pageController.home); // serves the customer home page
+// --- PAGES (GET Routes) ---
+// UPDATED: The root "/" now opens the Landing Page instead of the Login page
+router.add("GET", "/", pageController.landing); 
 
-// Styles
-router.add("GET", "/index.css",     pageController.styleIndex);     // serves the login/register stylesheet
-router.add("GET", "/error.css",     pageController.styleError);     // serves the error pages stylesheet
-router.add("GET", "/dashboard.css", pageController.styleDashboard); // serves the dashboard pages stylesheet
+router.add("GET", "/login", pageController.login); 
+router.add("GET", "/register", pageController.register); 
+router.add("GET", "/auth/login", pageController.login);      
+router.add("GET", "/auth/register", pageController.register); 
+router.add("GET", "/home", pageController.home); 
 
-// Customer Auth
-router.add("POST", "/auth/register", authController.register); // handles customer registration form submission
-router.add("POST", "/auth/login", authController.login); // handles customer login form submission
-router.add("POST", "/auth/logout", authController.logout); // handles customer logout
+// --- STYLES ---
+router.add("GET", "/index.css",     pageController.styleIndex);
+router.add("GET", "/error.css",     pageController.styleError);
+router.add("GET", "/dashboard.css", pageController.styleDashboard);
 
-// Courrier
-router.add("GET", "/courrier/register", pageController.courrierRegister); // serves the courrier registration form
-router.add("GET", "/courrier/login", pageController.courrierLogin); // serves the courrier login form
-router.add("GET", "/courrier/dashboard", courrierController.dashboard); // serves the courrier dashboard
-router.add("POST", "/courrier/register", courrierController.register); // handles courrier registration
-router.add("POST", "/courrier/login", courrierController.login); // handles courrier login
-router.add("POST", "/courrier/logout", courrierController.logout); // handles courrier logout
+// --- CUSTOMER AUTH (POST Routes) ---
+router.add("POST", "/auth/register", authController.register); 
+router.add("POST", "/auth/login", authController.login); 
+router.add("POST", "/auth/logout", authController.logout); 
 
-// Restaurant Manager
-router.add("GET", "/restaurant/register", pageController.restaurantRegister); // serves the manager registration form
-router.add("GET", "/restaurant/login", pageController.restaurantLogin); // serves the manager login form
-router.add("GET", "/restaurant/dashboard", restaurantController.dashboard); // serves the manager dashboard
-router.add("POST", "/restaurant/register", restaurantController.register); // handles manager registration
-router.add("POST", "/restaurant/login", restaurantController.login); // handles manager login
-router.add("POST", "/restaurant/logout", restaurantController.logout); // handles manager logout
+// --- COURRIER ---
+router.add("GET", "/courrier/register", pageController.courrierRegister); 
+router.add("GET", "/courrier/login", pageController.courrierLogin); 
+router.add("GET", "/courrier/dashboard", courrierController.dashboard); 
+router.add("POST", "/courrier/register", courrierController.register); 
+router.add("POST", "/courrier/login", courrierController.login); 
+router.add("POST", "/courrier/logout", courrierController.logout); 
 
-// Restaurant Menu
-router.add("GET", "/restaurant/menu", pageController.restaurantMenu); // serves the restaurant menu page — expects ?id= query param
-router.add("POST", "/restaurant/menu/add", restaurantController.addMenuItem); // handles adding a new menu item from the manager dashboard
+// --- RESTAURANT MANAGER ---
+router.add("GET", "/restaurant/register", pageController.restaurantRegister); 
+router.add("GET", "/restaurant/login", pageController.restaurantLogin); 
+router.add("GET", "/restaurant/dashboard", restaurantController.dashboard); 
+router.add("POST", "/restaurant/register", restaurantController.register); 
+router.add("POST", "/restaurant/login", restaurantController.login); 
+router.add("POST", "/restaurant/logout", restaurantController.logout); 
 
-// Cart & Orders
-router.add("POST", "/cart/add", orderController.addToCart); // adds one item to the customer's in-progress cart
-router.add("POST", "/order/create", orderController.create); // submits the in-progress cart as a placed order
-router.add("GET", "/order", orderController.view); // serves the order detail page — expects ?id= query param
-router.add("POST", "/order/cancel", orderController.cancel); // handles order cancellation from the order detail page
-router.add("POST", "/order/assign", restaurantController.assignCourier); // manager assigns a courier to a submitted order
+// --- RESTAURANT MENU ---
+router.add("GET", "/restaurant/menu", pageController.restaurantMenu); 
+router.add("POST", "/restaurant/menu/add", restaurantController.addMenuItem); 
 
-// Courrier Status
-router.add("POST", "/courrier/status", courrierController.updateStatus); // handles delivery status update from the courrier dashboard
+// --- CART & ORDERS ---
+router.add("POST", "/cart/add", orderController.addToCart); 
+router.add("POST", "/order/create", orderController.create); 
+router.add("GET", "/order", orderController.view); 
+router.add("POST", "/order/cancel", orderController.cancel); 
+router.add("POST", "/order/assign", restaurantController.assignCourier); 
 
-export const appRouter = router.dispatch; // exports the dispatch method — passed to http.createServer() in index.mjs
+// --- COURRIER STATUS ---
+router.add("POST", "/courrier/status", courrierController.updateStatus); 
+
+export const appRouter = router.dispatch;

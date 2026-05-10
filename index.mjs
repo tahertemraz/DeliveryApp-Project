@@ -1,15 +1,31 @@
-import "dotenv/config"; // loads .env file and injects all variables into process.env
-import http from "node:http"; // built-in Node.js module to create HTTP servers — no framework needed
-import { appRouter } from "./Controllers/AppRouter.mjs"; // imports the main dispatch function that handles all incoming requests
+import http from "node:http";
+import { appRouter } from "./Controllers/AppRouter.mjs";
+import Config from "./Utils/Config.mjs";
+import Logger from "./Utils/Logger.mjs";
 
-const PORT = process.env.PORT; // reads the PORT value from .env instead of hardcoding it
+// 1. Initialize our Singleton Config and Logger
+const config = new Config();
+const logger = new Logger();
 
+// 2. Extract the port from our new Config class
+const PORT = config.get("PORT") || 3000;
 
-const server = await http.createServer(appRouter); // creates the HTTP server and hands every request to appRouter
+// 3. Create the server (removed the unnecessary 'await' as noted by the doctor)
+const server = http.createServer(appRouter);
 
-server.listen(PORT, () => {
-  console.log(`Server running on PORT:${PORT}`); // confirms the server is up and which port it's bound to
+// 4. Start the server and use our professional Logger
+try {
+  server.listen(PORT, () => {
+    logger.info(`🚀 Server is successfully running on PORT: ${PORT}`);
+    logger.debug(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  });
+} catch (error) {
+  logger.error("Failed to start the server", error);
+  process.exit(1); // Exit with failure if we can't start
+}
+
+// Handle unexpected crashes gracefully
+process.on("uncaughtException", (err) => {
+  logger.error("There was an uncaught error", err);
+  process.exit(1);
 });
-
-// ---- MISSING ----
-// await is unnecessary on http.createServer() — it is synchronous, not a Promise

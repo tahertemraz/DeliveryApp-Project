@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Deliveroo — Welcome</title>
+    <link rel="stylesheet" href="/index.css" />
+    <style>
+      /* This centers the content vertically and adds a light background */
+      body { 
+        background-color: #f9f9f9; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        min-height: 100vh; 
+        margin: 0; 
+      }
+      .choice-container { display: flex; gap: 2rem; justify-content: center; margin-top: 3rem; }
+      .card { 
+        background: white; /* Added white background to cards */
+        border: 1px solid #ddd; 
+        padding: 2rem; 
+        border-radius: 8px; 
+        width: 200px; 
+        text-align: center; 
+        transition: 0.3s; 
+      }
+      .card:hover { border-color: #00ccbc; box-shadow: 0 4px 12px rgba(0,204,188,0.1); }
+      .card a { text-decoration: none; color: #00ccbc; font-weight: bold; }
+    </style>
+  </head>
+  <body>
+    <main style="max-width: 800px; width: 100%;">
+      <h1 style="text-align: center; color: #00ccbc;">Welcome to Deliveroo</h1>
+      <p style="text-align: center; color: #666;">Choose how you want to enter the platform:</p>
+      
+      <div class="choice-container">
+        <div class="card">
+          <h3>Customer</h3>
+          <p>Order food from local favorites.</p>
+          <a href="/auth/login">Login as Customer</a>
+        </div>
+        <div class="card">
+          <h3>Restaurant</h3>
+          <p>Manage your menu and orders.</p>
+          <a href="/restaurant/login">Manager Login</a>
+        </div>
+        <div class="card">
+          <h3>Courier</h3>
+          <p>Deliver food and earn money.</p>
+          <a href="/courrier/login">Courier Login</a>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

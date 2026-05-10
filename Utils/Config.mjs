@@ -17,7 +17,7 @@ export default class Config {
     this.dbUser       = process.env.DB_USER;
     this.dbPassword   = process.env.DB_PASSWORD;
     this.dbName       = process.env.DB_NAME;
-    this.jwtSecret    = process.env.JWT_SECRET; // Also required per README
+    this.jwtSecret    = process.env.JWT_SECRET;
 
     // Optional variables with sensible defaults
     this.dbConnLimit  = Number(process.env.DB_CONNECTION_LIMIT ?? "10");
@@ -35,16 +35,27 @@ export default class Config {
       DB_HOST: this.dbHost,
       DB_PORT: this.dbPort,
       DB_USER: this.dbUser,
-      DB_PASSWORD: this.dbPassword,
       DB_NAME: this.dbName,
       JWT_SECRET: this.jwtSecret
     };
 
+    // 1. Check most fields for being totally missing or invalid numbers
     for (const [envName, value] of Object.entries(requiredFields)) {
-      // Check for undefined, empty strings, or invalid numbers (NaN)
       if (value === undefined || value === "" || Number.isNaN(value)) {
         throw new Error(`Missing required config: ${envName}`);
       }
     }
+
+    // 2. Specialized check for DB_PASSWORD: 
+    // We only throw if it is 'undefined' (missing from .env). 
+    // We ALLOW it to be an empty string "" if you have no password.
+    if (this.dbPassword === undefined) {
+      throw new Error(`Missing required config: DB_PASSWORD`);
+    }
+  }
+
+  // Helper method to get config values easily
+  get(key) {
+    return this[key] || this[key.charAt(0).toLowerCase() + key.slice(1)];
   }
 }
